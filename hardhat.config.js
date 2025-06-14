@@ -7,15 +7,15 @@ module.exports = {
     compilers: [
       {
         version: "0.8.26",
-        settings: {
-          optimizer: {
-            enabled: true,
+    settings: {
+      optimizer: {
+        enabled: true,
             runs: 200,
           },
           metadata: {
             bytecodeHash: "none", // disable ipfs
             useLiteralContent: true // store source code in the json file directly
-          }
+      }
         },
       },
     ],

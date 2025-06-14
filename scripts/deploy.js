@@ -45,7 +45,7 @@ async function main() {
     deployer: await chainLuckVault.owner()
   };
 
-  // Write to file for frontend to use
+  // Write deployment info for reference
   const fs = require('fs');
   fs.writeFileSync(
     'deployment.json',
@@ -56,8 +56,7 @@ async function main() {
   console.log(`\n🎉 Deployment completed successfully!`);
   
   if (network.name === "monad") {
-    console.log(`\n🔗 Add this contract address to your frontend configuration:`);
-    console.log(`   NEXT_PUBLIC_CONTRACT_ADDRESS=${contractAddress}`);
+    console.log(`\n🔗 Contract deployed to: ${contractAddress}`);
   }
 }
 

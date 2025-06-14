@@ -1,364 +1,169 @@
-# 🍀 ChainLuck - Decentralized Lucky Cashback Rewards
+# 🍀 ChainLuck - Decentralized Lucky Rewards
 
-**"Turn everyday dApp interactions into lucky cashback rewards — decentralized, automatic, and funded by protocols, not users."**
+![ChainLuck Banner](https://img.shields.io/badge/ChainLuck-Live%20on%20Monad-success?style=for-the-badge&logo=ethereum)
 
-ChainLuck empowers any Web3 project to boost engagement by plugging in a luck-based cashback engine. Instead of spending on ads, protocols fund a vault, and when users take meaningful actions, they're entered into jackpot rounds to win real crypto rewards.
+**ChainLuck** is a cutting-edge decentralized lottery platform built on **Monad Testnet**, featuring automatic winner selection and instant ETH payouts.
 
-## 🎯 Project Vision
+## 🚀 **Live Deployment**
 
-ChainLuck offers value to three key audiences:
+- **🔗 Contract Address**: `0xCB58A72705FF1a064C6F3Cdb41014927649d8ED9`
+- **🌐 Network**: Monad Testnet (Chain ID: 10143)
+- **🔍 Explorer**: [View on Monad Explorer](https://testnet.monadexplorer.com/contracts/partial_match/10143/0xCB58A72705FF1a064C6F3Cdb41014927649d8ED9/)
+- **✅ Verification**: Verified on Sourcify
 
-| Audience | Value Delivered |
-|----------|----------------|
-| **Users** | Win ETH/token rewards by simply using your favorite dApps |
-| **Builders** | Retain users and increase daily active wallets without airdrops |
-| **Protocols** | Replace costly marketing campaigns with high-retention incentives |
+## ✨ **Key Features**
 
-## 🏗️ Architecture
+### 🎯 **Smart Contract Features**
+- **Automated Winner Selection**: Provably fair random selection algorithm
+- **Instant Payouts**: Winners receive ETH immediately after draw
+- **Configurable Parameters**: Adjustable winners per draw and minimum participants
+- **Admin Controls**: Fund management, manual draws, and round resets
+- **Event Logging**: Complete transaction history and winner tracking
 
-### Core Components
+## 🛠️ **Technology Stack**
 
-1. **🛠️ Smart Contract** (`contracts/ChainLuckVault.sol`)
-   - Decentralized vault engine for managing jackpot rounds
-   - Accepts funding from project treasuries
-   - Tracks participants and randomly selects winners
-   - Distributes prizes equally among winners
+| Component | Technology | Version |
+|-----------|------------|---------|
+| **Blockchain** | Solidity | 0.8.26 |
+| **Development** | Hardhat | ^2.19.0 |
+| **Web3** | ethers.js | ^6.8.0 |
+| **Network** | Monad Testnet | 10143 |
 
-2. **🎨 Frontend** (Next.js + Tailwind)
-   - `pages/index.tsx` - User interface for jackpot participation
-   - `pages/admin.tsx` - Admin dashboard for vault management
-   - `components/VaultStatus.tsx` - Real-time vault statistics
-   - `components/WinnerModal.tsx` - Celebration modal for winners
-
-3. **🧪 Test Suite** (Hardhat + Mocha)
-   - Comprehensive smart contract testing
-   - Winner selection fairness verification
-   - Prize distribution validation
-
-4. **🧰 JavaScript SDK** (`sdk/sdk.js`)
-   - Easy integration wrapper for dApps
-   - Event listeners for real-time updates
-   - Helper functions for common operations
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Node.js (v16 or later)
-- npm or yarn
-- MetaMask or Web3 wallet
-- Git
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd ChainLuck
-   ```
-
-2. **Install dependencies**
-   ```bash
-   # Install smart contract dependencies
-   npm install
-   
-   # Install frontend dependencies
-   cd frontend && npm install
-   cd ..
-   ```
-
-3. **Set up environment variables**
-   ```bash
-   # Copy environment template
-   cp frontend/.env.example frontend/.env.local
-   
-   # Add your private key for deployment (optional)
-   echo "PRIVATE_KEY=your_private_key_here" > .env
-   ```
-
-### Development Workflow
-
-#### 1. Smart Contract Development
-
-```bash
-# Compile contracts
-npm run compile
-
-# Run tests
-npm test
-
-# Deploy to local network
-npx hardhat node
-# In another terminal:
-npm run deploy
-```
-
-#### 2. Frontend Development
-
-```bash
-# Start frontend development server
-cd frontend
-npm run dev
-```
-
-Visit `http://localhost:3000` to see the user interface.
-Visit `http://localhost:3000/admin` to access the admin dashboard.
-
-#### 3. Deploy to Monad Testnet
-
-```bash
-# Set your private key in .env file
-# Get Monad testnet ETH from faucet
-
-# Deploy contract
-npx hardhat run scripts/deploy.js --network monad
-
-# Update frontend/.env.local with deployed contract address
-NEXT_PUBLIC_CONTRACT_ADDRESS=<deployed_contract_address>
-```
-
-## 📋 Smart Contract API
-
-### Core Functions
-
-| Function | Description | Access |
-|----------|-------------|--------|
-| `deposit()` | Add ETH to current round's prize pool | Public |
-| `enter(address user)` | Enter user into current jackpot round | Public |
-| `drawWinners()` | Manually trigger winner selection | Owner |
-| `setWinnersPerDraw(uint256)` | Configure winners per round | Owner |
-| `setMinParticipants(uint256)` | Set minimum participants for auto-draw | Owner |
-| `resetRound()` | Start new round | Owner |
-
-### View Functions
-
-| Function | Returns | Description |
-|----------|---------|-------------|
-| `getCurrentRoundInfo()` | `(roundId, participants, prizePool, isActive)` | Current round statistics |
-| `hasUserEnteredCurrent(address)` | `bool` | Check if user entered current round |
-| `getRoundParticipants(uint256)` | `address[]` | Get participants for specific round |
-| `getRoundWinners(uint256)` | `address[]` | Get winners for specific round |
-
-### Events
+## 📋 **Contract Configuration**
 
 ```solidity
-event UserEntered(address indexed user, uint256 roundId);
-event WinnersDrawn(uint256 roundId, address[] winners, uint256 prizePerWinner);
-event PrizeDistributed(address indexed winner, uint256 amount, uint256 roundId);
-event RoundReset(uint256 oldRoundId, uint256 newRoundId);
+Contract: ChainLuckVault
+Winners per Draw: 2
+Minimum Participants: 5
+Constructor Parameters: (2, 5)
 ```
 
-## 🔌 SDK Integration
+## 🔧 **Installation & Setup**
 
-### Basic Usage
-
-```javascript
-const { enterUser, getJackpotInfo } = require('./sdk/sdk.js');
-
-// Enter user into jackpot after dApp action
-async function onUserSwap(userAddress) {
-  const result = await enterUser(provider, vaultAddress, userAddress);
-  if (result.success) {
-    console.log('User entered jackpot!', result.transactionHash);
-  }
-}
-
-// Display current jackpot info
-const jackpotInfo = await getJackpotInfo(provider, vaultAddress);
-console.log(`Current prize: ${jackpotInfo.currentPrize} ETH`);
-```
-
-### Advanced SDK Usage
-
-```javascript
-const { ChainLuckSDK } = require('./sdk/sdk.js');
-
-const sdk = new ChainLuckSDK(contractAddress, provider);
-
-// Listen for user wins
-sdk.onUserWon(userAddress, (winData) => {
-  showWinnerModal(winData.amount, winData.roundId);
-});
-
-// Listen for round completions
-sdk.onWinnersDrawn((drawData) => {
-  console.log(`Round ${drawData.roundId} completed!`);
-  console.log(`Winners: ${drawData.winners.join(', ')}`);
-});
-```
-
-## 🧪 Testing
-
-Run the comprehensive test suite:
-
+### 1️⃣ **Clone Repository**
 ```bash
-# Run all tests
+git clone https://github.com/your-repo/ChainLuck.git
+cd ChainLuck
+```
+
+### 2️⃣ **Install Dependencies**
+```bash
+# Install contract dependencies
+npm install
+```
+
+### 3️⃣ **Environment Configuration**
+```bash
+# Create .env file in root directory
+echo 'PRIVATE_KEY=your_private_key_here' > .env
+echo 'MONAD_TESTNET_RPC_URL=https://testnet-rpc.monad.xyz' >> .env
+```
+
+## 🎮 **Usage Guide**
+
+### 👤 **For Users**
+1. **Connect Wallet**: Use Web3 compatible wallet and connect to Monad Testnet
+2. **Enter Round**: Call the contract's `enter()` function to participate (no cost to enter)
+3. **Wait for Draw**: Automatic draw when minimum participants reached
+4. **Win Prizes**: Receive instant ETH payouts if selected as winner
+
+### ⚙️ **For Admins** (Contract Owner)
+1. **Fund Vault**: Add ETH to the prize pool using `deposit()` function
+2. **Manual Draw**: Trigger winner selection manually with `drawWinners()`
+3. **Reset Round**: Start new round if needed with `resetRound()`
+4. **View Statistics**: Monitor participation and winner history through contract events
+
+## 🧪 **Testing**
+
+### **Run Smart Contract Tests**
+```bash
 npm test
-
-# Run specific test file
-npx hardhat test test/chainluck.test.js
-
-# Run tests with coverage
-npx hardhat coverage
 ```
+**Result**: ✅ All 26 tests passing
 
-### Test Coverage
-
+### **Test Coverage**
 - ✅ Contract deployment and initialization
-- ✅ Vault deposits and accumulation
-- ✅ User entry and duplicate prevention
-- ✅ Winner selection fairness
-- ✅ Prize distribution accuracy
-- ✅ Round management and resets
-- ✅ Owner-only function access
-- ✅ Emergency withdrawal
-- ✅ Configuration updates
+- ✅ User entry functionality
+- ✅ Winner selection algorithm
+- ✅ Prize distribution
+- ✅ Admin functions
+- ✅ Error handling and edge cases
 
-## 🌐 Frontend Features
+## 🔍 **Contract Functions**
 
-### User Interface (`/`)
+### **Public Functions**
+```solidity
+function enter(address user) external                     // Enter current round
+function deposit() external payable                       // Fund prize pool
+function getCurrentRoundInfo() external view             // Get round stats
+function getRoundParticipants(uint256) external view     // Get participants
+function getRoundWinners(uint256) external view          // Get winners
+function hasUserEnteredCurrent(address) external view    // Check entry status
+```
 
-- **Wallet Connection**: MetaMask integration
-- **Action Simulation**: Demo buttons for common dApp actions
-- **Real-time Status**: Live vault balance and participant count
-- **Winner Celebration**: Animated modal with confetti
-- **Responsive Design**: Mobile-friendly interface
+### **Admin Functions** (Owner Only)
+```solidity
+function drawWinners() external onlyOwner                // Manual winner draw
+function resetRound() external onlyOwner                 // Start new round
+function setWinnersPerDraw(uint256) external onlyOwner   // Update config
+function setMinParticipants(uint256) external onlyOwner  // Update config
+function emergencyWithdraw() external onlyOwner          // Emergency funds
+```
 
-### Admin Dashboard (`/admin`)
+## 📊 **Transaction Verification**
 
-- **Vault Management**: Fund vault, draw winners, reset rounds
-- **Participant Tracking**: View current round participants
-- **Winner History**: See recent winners
-- **Configuration**: Update winners per draw and minimum participants
-- **Emergency Controls**: Emergency withdrawal function
+### **How to Verify Transactions**
+1. **Monad Explorer**: Visit [testnet.monadexplorer.com](https://testnet.monadexplorer.com)
+2. **Search Contract**: Enter contract address `0xCB58A72705FF1a064C6F3Cdb41014927649d8ED9`
+3. **View Transactions**: Check all contract interactions
+4. **Verify Events**: Confirm UserEntered, WinnersDrawn, PrizeDistributed events
 
-## 🎨 UI/UX Features
+### **Expected Transaction Types**
+- **🎯 User Entry**: `enter(address)` transactions
+- **💰 Vault Funding**: `deposit()` with ETH value
+- **🎲 Winner Draws**: `drawWinners()` transactions
+- **🔄 Round Resets**: `resetRound()` transactions
 
-- **Modern Design**: Gradient backgrounds and glass morphism
-- **Responsive Layout**: Mobile-first design
-- **Real-time Updates**: Live data refresh and event listening
-- **Loading States**: Skeleton screens and spinners
-- **Error Handling**: User-friendly error messages
-- **Accessibility**: Keyboard navigation and ARIA labels
+## 🔒 **Security Features**
 
-## 🔒 Security Features
+- **✅ ReentrancyGuard**: Protection against reentrancy attacks
+- **✅ Ownable**: Admin function access control
+- **✅ Input Validation**: Comprehensive parameter checking
+- **✅ Safe Math**: Overflow protection with Solidity 0.8+
+- **✅ Event Logging**: Complete audit trail
 
-- **Reentrancy Protection**: OpenZeppelin ReentrancyGuard
-- **Access Control**: Owner-only administrative functions
-- **Input Validation**: Comprehensive parameter checking
-- **Emergency Features**: Emergency withdrawal for owner
-- **Event Logging**: Comprehensive event emission
-
-## 📊 Configuration
-
-### Default Parameters
-
-- **Winners Per Draw**: 2
-- **Minimum Participants**: 5 (for auto-draw)
-- **Network**: Monad Testnet (Chain ID: 41454)
-
-### Customization
-
-All parameters are configurable by the contract owner:
+## 📈 **Project Scripts**
 
 ```bash
-# Update via admin interface or directly via contract
-await contract.setWinnersPerDraw(3);
-await contract.setMinParticipants(10);
+# Smart Contract
+npm run compile      # Compile Solidity contracts
+npm run test         # Run contract test suite
+npm run deploy       # Deploy to Monad testnet
+npm run verify       # Verify contract on explorer
 ```
 
-## 🌍 Deployment
+## 🎯 **Project Status**
 
-### Local Development
+| Feature | Status |
+|---------|--------|
+| Smart Contract | ✅ Deployed & Verified |
+| Wallet Integration | ✅ Contract Compatible |
+| Real-time Events | ✅ Working |
 
-```bash
-# Start local Hardhat network
-npx hardhat node
-
-# Deploy to local network
-npm run deploy
-
-# Start frontend
-cd frontend && npm run dev
-```
-
-### Monad Testnet
-
-```bash
-# Deploy to Monad testnet
-npx hardhat run scripts/deploy.js --network monad
-
-# Verify deployment
-npx hardhat verify --network monad <contract_address> <constructor_args>
-```
-
-### Production Deployment
-
-```bash
-# Build frontend for production
-cd frontend && npm run build
-
-# Deploy frontend to Vercel/Netlify
-# Update environment variables with production contract address
-```
-
-## 📈 Integration Examples
-
-### For dApp Developers
-
-```javascript
-// Example: Uniswap integration
-async function afterSwap(userAddress, amount) {
-  // Execute swap logic...
-  
-  // Enter user into ChainLuck
-  await enterUser(provider, CHAINLUCK_ADDRESS, userAddress);
-  
-  showToast("Swap completed! You've been entered into ChainLuck jackpot! 🍀");
-}
-```
-
-### For Protocol Teams
-
-```javascript
-// Example: Protocol vault funding
-async function fundChainLuckVault(amount) {
-  const sdk = new ChainLuckSDK(VAULT_ADDRESS, provider);
-  const result = await sdk.fundVault(amount, signer);
-  
-  if (result.success) {
-    console.log(`Funded vault with ${amount} ETH`);
-  }
-}
-```
-
-## 🤝 Contributing
+## 🤝 **Contributing**
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+## 📄 **License**
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🔗 Links
+## 🙏 **Acknowledgments**
 
-- [Monad Testnet](https://testnet1.monad.xyz)
-- [Documentation](docs/)
-- [Discord Community](#)
-- [Twitter](#)
-
-## 🆘 Support
-
-- Create an issue for bugs or feature requests
-- Join our Discord for community support
-- Check the documentation for integration guides
-
----
-
-**Built with ❤️ for the Web3 community**
-
-*ChainLuck - Making DeFi more rewarding, one transaction at a time! 🍀* 
+- Built on Monad Testnet
+- Powered by Hardhat development environment
+- Uses OpenZeppelin security standards 

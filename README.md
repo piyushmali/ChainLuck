@@ -48,13 +48,15 @@ cd ChainLuck
 
 ### 2️⃣ **Install Dependencies**
 ```bash
-# Install contract dependencies
+# Navigate to blockchain directory and install dependencies
+cd blockchain
 npm install
 ```
 
 ### 3️⃣ **Environment Configuration**
 ```bash
-# Create .env file in root directory
+# Create .env file in blockchain directory (if not exists)
+cd blockchain
 echo 'PRIVATE_KEY=your_private_key_here' > .env
 echo 'MONAD_TESTNET_RPC_URL=https://testnet-rpc.monad.xyz' >> .env
 ```
@@ -77,6 +79,7 @@ echo 'MONAD_TESTNET_RPC_URL=https://testnet-rpc.monad.xyz' >> .env
 
 ### **Run Smart Contract Tests**
 ```bash
+cd blockchain
 npm test
 ```
 **Result**: ✅ All 26 tests passing
@@ -135,11 +138,32 @@ function emergencyWithdraw() external onlyOwner          // Emergency funds
 ## 📈 **Project Scripts**
 
 ```bash
-# Smart Contract
+# Smart Contract (run from blockchain directory)
+cd blockchain
 npm run compile      # Compile Solidity contracts
 npm run test         # Run contract test suite
 npm run deploy       # Deploy to Monad testnet
 npm run verify       # Verify contract on explorer
+```
+
+## 📁 **Project Structure**
+
+```
+ChainLuck/
+├── blockchain/           # All blockchain-related files
+│   ├── contracts/       # Solidity smart contracts
+│   ├── scripts/         # Deployment scripts
+│   ├── test/           # Contract test suite
+│   ├── cache/          # Hardhat cache
+│   ├── artifacts/      # Compiled contracts
+│   ├── sdk/            # Development kit
+│   ├── hardhat.config.js
+│   ├── package.json
+│   ├── .env
+│   └── deployment.json
+├── README.md
+├── .gitignore
+└── .git/
 ```
 
 ## 🎯 **Project Status**

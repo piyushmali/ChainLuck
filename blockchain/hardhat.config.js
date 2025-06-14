@@ -4,45 +4,42 @@ require("dotenv").config();
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: {
-    compilers: [
-      {
-        version: "0.8.26",
+    version: "0.8.20",
     settings: {
       optimizer: {
         enabled: true,
-            runs: 200,
-          },
-          metadata: {
-            bytecodeHash: "none", // disable ipfs
-            useLiteralContent: true // store source code in the json file directly
+        runs: 200
       }
-        },
-      },
-    ],
+    }
   },
   networks: {
-    hardhat: {},
-    localhost: {
-      url: "http://127.0.0.1:8545"
+    hardhat: {
+      chainId: 31337
     },
     monad: {
-      url: process.env.MONAD_TESTNET_RPC_URL || "https://testnet-rpc.monad.xyz",
+      url: "https://testnet-rpc.monad.xyz", // Correct official RPC
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 10143,
-    },
-  },
-  paths: {
-    sources: "./contracts",
-    tests: "./test",
-    cache: "./cache",
-    artifacts: "./artifacts"
-  },
-  sourcify: {
-    enabled: true,
-    apiUrl: "https://sourcify-api-monad.blockvision.org",
-    browserUrl: "https://testnet.monadexplorer.com"
+      gas: "auto",
+      gasPrice: "auto",
+      timeout: 60000,
+      httpHeaders: {}
+    }
   },
   etherscan: {
-    enabled: false
+    // No etherscan verification for Monad testnet yet
+    apiKey: {
+      monad: "abc" // placeholder
+    },
+    customChains: [
+      {
+        network: "monad",
+        chainId: 10143,
+        urls: {
+          apiURL: "https://testnet.monadexplorer.com/api",
+          browserURL: "https://testnet.monadexplorer.com"
+        }
+      }
+    ]
   }
 }; 

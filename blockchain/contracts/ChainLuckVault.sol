@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
@@ -201,6 +201,10 @@ contract ChainLuckVault is Ownable, ReentrancyGuard {
     
     function hasUserEnteredCurrent(address user) external view returns (bool) {
         return rounds[currentRoundId].hasEntered[user];
+    }
+    
+    function vaultBalance() external view returns (uint256) {
+        return rounds[currentRoundId].prizePool;
     }
     
     // Emergency functions

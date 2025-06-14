@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useContractRead } from 'wagmi'
+import { useState } from 'react'
+import { useReadContract } from 'wagmi'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CHAINLUCK_CONTRACT_ADDRESS } from '../config/wagmi'
 import { CHAINLUCK_ABI } from '../config/contract'
@@ -11,12 +11,11 @@ export default function ParticipantsList() {
   const { roundInfo, refetchAll } = useChainLuck()
   const [refreshing, setRefreshing] = useState(false)
 
-  const { data: participants, isLoading, refetch } = useContractRead({
+  const { data: participants, isLoading, refetch } = useReadContract({
     address: CHAINLUCK_CONTRACT_ADDRESS,
     abi: CHAINLUCK_ABI,
     functionName: 'getRoundParticipants',
     args: roundInfo ? [BigInt(roundInfo.roundId)] : undefined,
-    enabled: !!roundInfo?.roundId,
   })
 
   const handleRefresh = async () => {

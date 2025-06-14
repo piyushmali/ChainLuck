@@ -1,46 +1,39 @@
 import { create } from 'zustand'
 
+interface Winner {
+  address: string
+  amount: string
+  roundId: number
+}
+
 interface AppState {
-  // UI State
-  showAdminPanel: boolean
+  // Winner Modal
   showWinnerModal: boolean
-  isConnecting: boolean
-  
-  // Notifications
-  lastWinner: string | null
-  lastPrize: string | null
+  winners: Winner[]
   
   // Actions
-  setShowAdminPanel: (show: boolean) => void
-  setShowWinnerModal: (show: boolean) => void
-  setIsConnecting: (connecting: boolean) => void
-  setLastWinner: (winner: string | null, prize: string | null) => void
+  setWinners: (winners: Winner[]) => void
+  showWinnerModalWithWinners: (winners: Winner[]) => void
+  hideWinnerModal: () => void
   reset: () => void
 }
 
 const initialState = {
-  showAdminPanel: false,
   showWinnerModal: false,
-  isConnecting: false,
-  lastWinner: null,
-  lastPrize: null,
+  winners: [],
 }
 
-export const useAppStore = create<AppState>((set, get) => ({
+export const useAppStore = create<AppState>((set) => ({
   ...initialState,
   
-  setShowAdminPanel: (show) => set({ showAdminPanel: show }),
+  setWinners: (winners) => set({ winners }),
   
-  setShowWinnerModal: (show) => set({ showWinnerModal: show }),
+  showWinnerModalWithWinners: (winners) => set({ 
+    winners, 
+    showWinnerModal: true 
+  }),
   
-  setIsConnecting: (connecting) => set({ isConnecting: connecting }),
-  
-  setLastWinner: (winner, prize) => {
-    set({ lastWinner: winner, lastPrize: prize })
-    if (winner) {
-      set({ showWinnerModal: true })
-    }
-  },
+  hideWinnerModal: () => set({ showWinnerModal: false }),
   
   reset: () => set(initialState),
 })) 

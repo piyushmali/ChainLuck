@@ -1,4 +1,4 @@
-import { useContractRead, useContractWrite, useAccount, useWaitForTransactionReceipt } from 'wagmi'
+import { useReadContract, useWriteContract, useAccount, useWaitForTransactionReceipt } from 'wagmi'
 import { parseEther, formatEther } from 'viem'
 import { CHAINLUCK_CONTRACT_ADDRESS } from '../config/wagmi'
 import { CHAINLUCK_ABI } from '../config/contract'
@@ -6,43 +6,40 @@ import { CHAINLUCK_ABI } from '../config/contract'
 export function useChainLuck() {
   const { address } = useAccount()
 
-  // Read Functions
-  const { data: roundInfo, isLoading: roundInfoLoading, refetch: refetchRoundInfo } = useContractRead({
+  const contractConfig = {
     address: CHAINLUCK_CONTRACT_ADDRESS,
     abi: CHAINLUCK_ABI,
+  }
+
+  // Read Functions
+  const { data: roundInfo, isLoading: roundInfoLoading, refetch: refetchRoundInfo, error: roundInfoError } = useReadContract({
+    ...contractConfig,
     functionName: 'getCurrentRoundInfo',
   })
 
-  const { data: vaultBalance, isLoading: vaultBalanceLoading, refetch: refetchVaultBalance } = useContractRead({
-    address: CHAINLUCK_CONTRACT_ADDRESS,
-    abi: CHAINLUCK_ABI,
+  const { data: vaultBalance, isLoading: vaultBalanceLoading, refetch: refetchVaultBalance, error: vaultBalanceError } = useReadContract({
+    ...contractConfig,
     functionName: 'vaultBalance',
   })
 
-  const { data: hasEntered, isLoading: hasEnteredLoading, refetch: refetchHasEntered } = useContractRead({
-    address: CHAINLUCK_CONTRACT_ADDRESS,
-    abi: CHAINLUCK_ABI,
+  const { data: hasEntered, isLoading: hasEnteredLoading, refetch: refetchHasEntered, error: hasEnteredError } = useReadContract({
+    ...contractConfig,
     functionName: 'hasUserEnteredCurrent',
     args: address ? [address] : undefined,
-    enabled: !!address,
   })
 
-  const { data: isOwner, isLoading: isOwnerLoading } = useContractRead({
-    address: CHAINLUCK_CONTRACT_ADDRESS,
-    abi: CHAINLUCK_ABI,
+  const { data: ownerData, isLoading: isOwnerLoading } = useReadContract({
+    ...contractConfig,
     functionName: 'owner',
-    select: (data) => data === address,
   })
 
-  const { data: winnersPerDraw } = useContractRead({
-    address: CHAINLUCK_CONTRACT_ADDRESS,
-    abi: CHAINLUCK_ABI,
+  const { data: winnersPerDraw } = useReadContract({
+    ...contractConfig,
     functionName: 'winnersPerDraw',
   })
 
-  const { data: minParticipants } = useContractRead({
-    address: CHAINLUCK_CONTRACT_ADDRESS,
-    abi: CHAINLUCK_ABI,
+  const { data: minParticipants } = useReadContract({
+    ...contractConfig,
     functionName: 'minParticipants',
   })
 
@@ -51,19 +48,19 @@ export function useChainLuck() {
     data: enterHash, 
     writeContract: enterLottery, 
     isPending: enterPending 
-  } = useContractWrite()
+  } = useWriteContract()
 
   const { 
     data: depositHash, 
     writeContract: depositToVault, 
     isPending: depositPending 
-  } = useContractWrite()
+  } = useWriteContract()
 
   const { 
     data: drawHash, 
     writeContract: drawWinners, 
     isPending: drawPending 
-  } = useContractWrite()
+  } = useWriteContract()
 
   // Transaction receipts
   const { isLoading: enterConfirming, isSuccess: enterSuccess } = useWaitForTransactionReceipt({
@@ -117,24 +114,36 @@ export function useChainLuck() {
   const parsedRoundInfo = roundInfo ? {
     roundId: Number(roundInfo[0]),
     participantCount: Number(roundInfo[1]),
-    vaultBalance: formatEther(roundInfo[2]),
+    prizePool: formatEther(roundInfo[2]),
     isActive: roundInfo[3],
   } : null
 
   const parsedVaultBalance = vaultBalance ? formatEther(vaultBalance) : '0'
+  const isOwner = ownerData === address
+
+  // Check for any errors
+  const hasErrors = !!(roundInfoError || vaultBalanceError || hasEnteredError)
 
   return {
     // State
     roundInfo: parsedRoundInfo,
     vaultBalance: parsedVaultBalance,
     hasEntered: hasEntered || false,
-    isOwner: isOwner || false,
+    isOwner,
     winnersPerDraw: winnersPerDraw ? Number(winnersPerDraw) : 0,
     minParticipants: minParticipants ? Number(minParticipants) : 0,
     
     // Loading states
     isLoading: roundInfoLoading || vaultBalanceLoading || hasEnteredLoading,
     isOwnerLoading,
+    hasErrors,
+    
+    // Errors
+    errors: {
+      roundInfo: roundInfoError,
+      vaultBalance: vaultBalanceError,
+      hasEntered: hasEnteredError,
+    },
     
     // Actions
     enter,

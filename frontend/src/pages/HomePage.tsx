@@ -7,7 +7,7 @@ import { formatCurrency, formatAddress } from '../utils'
 import VaultStatus from '../components/VaultStatus'
 import EntryButton from '../components/EntryButton'
 import ParticipantsList from '../components/ParticipantsList'
-import { Coins, Users, Trophy, Sparkles } from 'lucide-react'
+import { Coins, Users, Trophy, Sparkles, AlertCircle, RefreshCw } from 'lucide-react'
 
 export default function HomePage() {
   const { isConnected, address } = useAccount()
@@ -16,6 +16,8 @@ export default function HomePage() {
     vaultBalance,
     hasEntered,
     isLoading,
+    hasErrors,
+    errors,
     enter,
     enterPending,
     enterSuccess,
@@ -40,6 +42,10 @@ export default function HomePage() {
       toast.error('Failed to enter lottery. Please try again.')
       console.error('Enter error:', error)
     }
+  }
+
+  const handleRetry = () => {
+    refetchAll()
   }
 
   if (!isConnected) {
@@ -76,11 +82,47 @@ export default function HomePage() {
     )
   }
 
+  // Show error state if there are RPC issues
+  if (hasErrors && !isLoading) {
+    return (
+      <div className="text-center py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass-card max-w-md mx-auto"
+        >
+          <div className="text-6xl mb-6">⚠️</div>
+          <h1 className="text-2xl font-bold mb-4 text-red-400">
+            Connection Error
+          </h1>
+          <p className="text-gray-300 mb-6">
+            Unable to connect to the Monad testnet. This might be due to network issues.
+          </p>
+          <div className="space-y-2 text-sm text-gray-400 mb-6">
+            {errors.roundInfo && <p>• Round info: {errors.roundInfo.message}</p>}
+            {errors.vaultBalance && <p>• Vault balance: {errors.vaultBalance.message}</p>}
+            {errors.hasEntered && <p>• Entry status: {errors.hasEntered.message}</p>}
+          </div>
+          <button
+            onClick={handleRetry}
+            className="btn-primary flex items-center space-x-2"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Retry Connection</span>
+          </button>
+        </motion.div>
+      </div>
+    )
+  }
+
   if (isLoading) {
     return (
       <div className="text-center py-20">
         <div className="loading-spinner mx-auto mb-4" />
         <p className="text-gray-400">Loading lottery information...</p>
+        <p className="text-xs text-gray-500 mt-2">
+          If this takes too long, there might be network issues
+        </p>
       </div>
     )
   }
